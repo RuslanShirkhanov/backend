@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_dynamic_calls
+
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
@@ -232,12 +234,18 @@ abstract class SLT {
         ),
       );
 
+  static Future<String> getFeedback({
+    required U<int> hotelId,
+  }) async =>
+      (const <Object>[]).err.toString(); // todo
+
   static Future<String> getDepartCities() async {
     final uri = _makeUri('GetDepartCities', {});
     final res = await _dio.get<Object>(uri.toString());
 
     if (res.statusCode == 200) {
-      return (res.data['GetDepartCitiesResult']['Data'] as Object)
+      return ((res.data as Map<String, dynamic>)['GetDepartCitiesResult']
+              ['Data'] as Object)
           .ok
           .toString();
     }
@@ -253,7 +261,10 @@ abstract class SLT {
     final res = await _dio.get<Object>(uri.toString());
 
     if (res.statusCode == 200) {
-      return (res.data['GetCountriesResult']['Data'] as Object).ok.toString();
+      return ((res.data as Map<String, dynamic>)['GetCountriesResult']['Data']
+              as Object)
+          .ok
+          .toString();
     }
     return (const <Object>[]).err.toString();
   }
@@ -267,7 +278,10 @@ abstract class SLT {
     final res = await _dio.get<Object>(uri.toString());
 
     if (res.statusCode == 200) {
-      return (res.data['GetCitiesResult']['Data'] as Object).ok.toString();
+      return ((res.data as Map<String, dynamic>)['GetCitiesResult']['Data']
+              as Object)
+          .ok
+          .toString();
     }
     return (const <Object>[]).err.toString();
   }
@@ -287,7 +301,10 @@ abstract class SLT {
     final res = await _dio.get<Object>(uri.toString());
 
     if (res.statusCode == 200) {
-      return (res.data['GetHotelsResult']['Data'] as Object).ok.toString();
+      return ((res.data as Map<String, dynamic>)['GetHotelsResult']['Data']
+              as Object)
+          .ok
+          .toString();
     }
     return (const <Object>[]).err.toString();
   }
@@ -305,7 +322,8 @@ abstract class SLT {
     final res = await _dio.get<Object>(uri.toString());
 
     if (res.statusCode == 200) {
-      return (res.data['GetTourDatesResult']['Data']['dates'] as Object)
+      return ((res.data as Map<String, dynamic>)['GetTourDatesResult']['Data']
+              ['dates'] as Object)
           .ok
           .toString();
     }
@@ -336,7 +354,8 @@ abstract class SLT {
     );
 
     if (res.statusCode == 200) {
-      return (res.data['GetToursResult']['Data']['aaData'] as Object)
+      return ((res.data as Map<String, dynamic>)['GetToursResult']['Data']
+              ['aaData'] as Object)
           .ok
           .toString();
     }
@@ -365,7 +384,8 @@ abstract class SLT {
 
     if (res.statusCode == 200) {
       return U(
-        res.data['GetToursResult']['Data']['requestId'] as int,
+        (res.data as Map<String, dynamic>)['GetToursResult']['Data']
+            ['requestId'] as int,
       );
     }
     return null;
@@ -385,7 +405,8 @@ abstract class SLT {
     );
 
     if (res.statusCode == 200) {
-      return (res.data['GetLoadStateResult']['Data'] as List<dynamic>)
+      return ((res.data as Map<String, dynamic>)['GetLoadStateResult']['Data']
+              as List<dynamic>)
           .cast<Map<String, dynamic>>()
           .map(LoadState.serialize)
           .toList()
@@ -414,7 +435,8 @@ abstract class SLT {
     );
 
     if (res.statusCode == 200) {
-      return (res.data['GetToursResult']['Data']['aaData'] as Object)
+      return ((res.data as Map<String, dynamic>)['GetToursResult']['Data']
+              ['aaData'] as Object)
           .ok
           .toString();
     }
