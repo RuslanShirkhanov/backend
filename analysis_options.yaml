@@ -1,0 +1,28 @@
+include: package:flutter_lints/flutter.yaml
+
+analyzer:
+    exclude:
+        - 'build/**'
+        - '*/**/*.gql.dart'
+        - '*/**/*.g.dart'
+    strong-mode:
+        implicit-casts: false
+        implicit-dynamic: false
+
+linter:
+    rules:
+        - avoid_dynamic_calls
+        - always_put_control_body_on_new_line
+        - avoid_multiple_declarations_per_line
+        - avoid_unused_constructor_parameters
+        - parameter_assignments
+        - unnecessary_await_in_return
+        - prefer_expression_function_bodies
+        - prefer_foreach
+        - avoid_void_async
+        - cascade_invocations
+        - avoid_positional_boolean_parameters
+        - avoid_redundant_argument_values
+        - always_declare_return_types
+        - prefer_single_quotes
+        - unawaited_futures
