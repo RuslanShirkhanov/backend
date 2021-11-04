@@ -4,12 +4,16 @@ import 'pair.dart';
 
 enum ResultKind { success, failure }
 
-String resultKindToString(ResultKind value) {
-  switch (value) {
-    case ResultKind.success:
-      return 'success';
-    case ResultKind.failure:
-      return 'failure';
+extension ResultKindShow on ResultKind {
+  String get show {
+    switch (this) {
+      case ResultKind.success:
+        return 'success';
+      case ResultKind.failure:
+        return 'failure';
+      default:
+        throw TypeError();
+    }
   }
 }
 
@@ -25,10 +29,11 @@ class Result<O, E> extends Pair<O?, E?> {
 
   bool get isSuccess => fst != null && snd == null;
   bool get isFailure => fst == null && snd != null;
+}
 
-  @override
-  String toString() => jsonEncode(<String, dynamic>{
-        'kind': resultKindToString(kind),
+extension ResultShow on Result {
+  String get show => jsonEncode(<String, dynamic>{
+        'kind': kind.show,
         'value': fst,
         'error': snd,
       });

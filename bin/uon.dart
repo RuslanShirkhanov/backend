@@ -28,11 +28,9 @@ abstract class UON {
         uri.toString(),
         data: {'note': note},
       );
-      return true.success.toString();
+      return true.success.show;
     } catch (error) {
-      // ignore: avoid_print
-      print(error);
-      return false.failure.toString();
+      return false.failure.show;
     }
   }
 }

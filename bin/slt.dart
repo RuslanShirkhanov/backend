@@ -98,7 +98,6 @@ abstract class SLT {
         ),
       );
 
-  // todo
   static Future<String> getFeedback({
     required U<int> hotelId,
   }) async {
@@ -106,12 +105,12 @@ abstract class SLT {
       'https://module.sletat.ru/XmlGate.svc?singleWSDL',
       data: '''
             <x:Envelope xmlns:x="http://schemas.xmlsoap.org/soap/envelope/" xmlns:urn="urn:SletatRu:Contracts:Soap11Gate:v1" xmlns:urn1="urn:SletatRu:DataTypes:AuthData:v1">
-            <x:Header>
-              <urn1:AuthInfo>
-                <urn1:Login>ra-koncept@yandex.ru</urn1:Login>
-                <urn1:Password>4FFYfEOwfi</urn1:Password>
-              </urn1:AuthInfo>
-            </x:Header>
+              <x:Header>
+                <urn1:AuthInfo>
+                  <urn1:Login>ra-koncept@yandex.ru</urn1:Login>
+                  <urn1:Password>4FFYfEOwfi</urn1:Password>
+                </urn1:AuthInfo>
+              </x:Header>
               <x:Body>
                 <urn:GetHotelComments>
                   <urn:hotelId>$hotelId</urn:hotelId>
@@ -127,7 +126,7 @@ abstract class SLT {
         },
       ),
     );
-    return res.data.toString();
+    return res.data.success.show;
   }
 
   static Future<String> getDepartCities() async {
@@ -138,9 +137,9 @@ abstract class SLT {
       return ((res.data as Map<String, dynamic>)['GetDepartCitiesResult']
               ['Data'] as Object)
           .success
-          .toString();
+          .show;
     }
-    return (const <Object>[]).failure.toString();
+    return (const <Object>[]).failure.show;
   }
 
   static Future<String> getCountries({
@@ -155,9 +154,9 @@ abstract class SLT {
       return ((res.data as Map<String, dynamic>)['GetCountriesResult']['Data']
               as Object)
           .success
-          .toString();
+          .show;
     }
-    return (const <Object>[]).failure.toString();
+    return (const <Object>[]).failure.show;
   }
 
   static Future<String> getCities({
@@ -172,9 +171,9 @@ abstract class SLT {
       return ((res.data as Map<String, dynamic>)['GetCitiesResult']['Data']
               as Object)
           .success
-          .toString();
+          .show;
     }
-    return (const <Object>[]).failure.toString();
+    return (const <Object>[]).failure.show;
   }
 
   static Future<String> getHotels({
@@ -195,9 +194,9 @@ abstract class SLT {
       return ((res.data as Map<String, dynamic>)['GetHotelsResult']['Data']
               as Object)
           .success
-          .toString();
+          .show;
     }
-    return (const <Object>[]).failure.toString();
+    return (const <Object>[]).failure.show;
   }
 
   static Future<String> getTourDates({
@@ -216,9 +215,9 @@ abstract class SLT {
       return ((res.data as Map<String, dynamic>)['GetTourDatesResult']['Data']
               ['dates'] as Object)
           .success
-          .toString();
+          .show;
     }
-    return (const <Object>[]).failure.toString();
+    return (const <Object>[]).failure.show;
   }
 
   static Future<String> getHotTours({
@@ -248,9 +247,9 @@ abstract class SLT {
       return ((res.data as Map<String, dynamic>)['GetToursResult']['Data']
               ['aaData'] as Object)
           .success
-          .toString();
+          .show;
     }
-    return (const <Object>[]).failure.toString();
+    return (const <Object>[]).failure.show;
   }
 
   static bool _checkLoadStates(List<LoadState> loadStates) =>
@@ -329,10 +328,10 @@ abstract class SLT {
       return ((res.data as Map<String, dynamic>)['GetToursResult']['Data']
               ['aaData'] as Object)
           .success
-          .toString();
+          .show;
     }
 
-    return (const <Object>[]).failure.toString();
+    return (const <Object>[]).failure.show;
   }
 
   static Future<String> getSeasonTours(
@@ -360,7 +359,7 @@ abstract class SLT {
             arguments,
             requestId: requestId,
           )
-        : (const <Object>[]).failure.toString();
+        : (const <Object>[]).failure.show;
 
     return result;
   }
