@@ -8,28 +8,28 @@ import 'u.dart';
 class GetSeasonToursArguments {
   final U<int> cityFromId;
   final U<int> countryId;
-  final List<U<int>> cities;
-  final List<U<int>> meals;
-  final List<U<int>> stars;
-  final List<U<int>> hotels;
   final U<int> adults;
   final U<int> kids;
   final List<U<int>> kidsAges;
   final U<int> nightsMin;
   final U<int> nightsMax;
+  final List<U<int>>? stars;
+  final List<U<int>>? cities;
+  final List<U<int>>? hotels;
+  final List<U<int>>? meals;
 
   const GetSeasonToursArguments({
     required this.cityFromId,
     required this.countryId,
-    required this.cities,
-    required this.meals,
-    required this.stars,
-    required this.hotels,
     required this.adults,
     required this.kids,
     required this.kidsAges,
     required this.nightsMin,
     required this.nightsMax,
+    required this.stars,
+    required this.cities,
+    required this.hotels,
+    required this.meals,
   });
 
   Map<String, dynamic> toQueryParameters({
@@ -46,15 +46,15 @@ class GetSeasonToursArguments {
         if (requestId != null) 'updateResult': const U(1),
         'pageSize': const U(1000),
         'pageNumber': const U(1),
-        // 'cities': cities.join(','),
-        // 'meals': meals.join(','),
-        // 'stars': stars.join(','),
-        // 'hotels': hotels.join(','),
-        // 's_adults': adults,
-        // 's_kids': kids,
-        // 's_nightsMin': nightsMin,
-        // 's_nightsMax': nightsMax,
-        // 'includeDescriptions': U<int>(1),
+        'includeDescriptions': const U(1),
+        's_adults': adults,
+        's_kids': kids,
+        's_nightsMin': nightsMin,
+        's_nightsMax': nightsMax,
+        if (stars != null) 'stars': stars!.join(','),
+        if (cities != null) 'cities': cities!.join(','),
+        if (hotels != null) 'hotels': hotels!.join(','),
+        if (meals != null) 'meals': meals!.join(','),
       };
 }
 
@@ -98,10 +98,37 @@ abstract class SLT {
         ),
       );
 
+  // todo
   static Future<String> getFeedback({
     required U<int> hotelId,
-  }) async =>
-      (const <Object>[]).failure.toString(); // todo
+  }) async {
+    final res = await _dio.post<Object>(
+      'https://module.sletat.ru/XmlGate.svc?singleWSDL',
+      data: '''
+            <x:Envelope xmlns:x="http://schemas.xmlsoap.org/soap/envelope/" xmlns:urn="urn:SletatRu:Contracts:Soap11Gate:v1" xmlns:urn1="urn:SletatRu:DataTypes:AuthData:v1">
+            <x:Header>
+              <urn1:AuthInfo>
+                <urn1:Login>ra-koncept@yandex.ru</urn1:Login>
+                <urn1:Password>4FFYfEOwfi</urn1:Password>
+              </urn1:AuthInfo>
+            </x:Header>
+              <x:Body>
+                <urn:GetHotelComments>
+                  <urn:hotelId>$hotelId</urn:hotelId>
+                </urn:GetHotelComments>
+              </x:Body>
+            </x:Envelope>
+            ''',
+      options: Options(
+        headers: <String, String>{
+          'Content-Type': 'text/xml;charset=UTF-8',
+          'SOAPAction':
+              'urn:SletatRu:Contracts:Soap11Gate:v1/Soap11Gate/GetHotelComments'
+        },
+      ),
+    );
+    return res.data.toString();
+  }
 
   static Future<String> getDepartCities() async {
     final uri = _makeUri('GetDepartCities', {});

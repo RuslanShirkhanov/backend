@@ -26,9 +26,6 @@ class Result<O, E> extends Pair<O?, E?> {
   bool get isSuccess => fst != null && snd == null;
   bool get isFailure => fst == null && snd != null;
 
-  O get asSuccess => fst!;
-  E get asFailure => snd!;
-
   @override
   String toString() => jsonEncode(<String, dynamic>{
         'kind': resultKindToString(kind),

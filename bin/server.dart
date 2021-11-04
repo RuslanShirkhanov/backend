@@ -32,6 +32,11 @@ abstract class Utils {
       throw xs.values.firstWhere((x) => x.isFailure);
     }
   }
+
+  static U<int> Function(String) parseUInt = int.parse.then(U.of);
+
+  static List<U<int>> parseUIntList(String value) =>
+      value.split(',').map(parseUInt).toList();
 }
 
 abstract class Routes {
@@ -42,18 +47,21 @@ abstract class Routes {
     return {'message': 'not found'};
   }
 
+  static Future getRoot(HttpRequest req, HttpResponse res) async =>
+      SLT.getFeedback(hotelId: const U(98625));
+
   static Future getDepartCities(HttpRequest req, HttpResponse res) async =>
       SLT.getDepartCities();
 
   static Future getCountries(HttpRequest req, HttpResponse res) async {
     final required = req.getParameters({
-      'town_from_id': int.parse.then(U.of),
+      'town_from_id': Utils.parseUInt,
     });
 
     try {
       Utils.checkParameters(required);
       return SLT.getCountries(
-        townFromId: required['town_from_id']!.asSuccess as U<int>,
+        townFromId: required['town_from_id']!.fst! as U<int>,
       );
     } catch (error) {
       return error.toString();
@@ -62,13 +70,13 @@ abstract class Routes {
 
   static Future getCities(HttpRequest req, HttpResponse res) async {
     final required = req.getParameters({
-      'country_id': int.parse.then(U.of),
+      'country_id': Utils.parseUInt,
     });
 
     try {
       Utils.checkParameters(required);
       return SLT.getCities(
-        countryId: required['country_id']!.asSuccess as U<int>,
+        countryId: required['country_id']!.fst! as U<int>,
       );
     } catch (error) {
       return error.toString();
@@ -77,17 +85,17 @@ abstract class Routes {
 
   static Future getHotels(HttpRequest req, HttpResponse res) async {
     final required = req.getParameters({
-      'country_id': int.parse.then(U.of),
-      'towns': (towns) => towns.split(',').map(int.parse).map(U.of).toList(),
-      'stars': (stars) => stars.split(',').map(int.parse).map(U.of).toList(),
+      'country_id': Utils.parseUInt,
+      'towns': Utils.parseUIntList,
+      'stars': Utils.parseUIntList,
     });
 
     try {
       Utils.checkParameters(required);
       return SLT.getHotels(
-        countryId: required['country_id']!.asSuccess as U<int>,
-        towns: required['towns']!.asSuccess as List<U<int>>,
-        stars: required['stars']!.asSuccess as List<U<int>>,
+        countryId: required['country_id']!.fst! as U<int>,
+        towns: required['towns']!.fst! as List<U<int>>,
+        stars: required['stars']!.fst! as List<U<int>>,
       );
     } catch (error) {
       return error.toString();
@@ -96,15 +104,15 @@ abstract class Routes {
 
   static Future getTourDates(HttpRequest req, HttpResponse res) async {
     final required = req.getParameters({
-      'depart_city_id': int.parse.then(U.of),
-      'country_id': int.parse.then(U.of),
+      'depart_city_id': Utils.parseUInt,
+      'country_id': Utils.parseUInt,
     });
 
     try {
       Utils.checkParameters(required);
       return SLT.getTourDates(
-        departCityId: required['depart_city_id']!.asSuccess as U<int>,
-        countryId: required['country_id']!.asSuccess as U<int>,
+        departCityId: required['depart_city_id']!.fst! as U<int>,
+        countryId: required['country_id']!.fst! as U<int>,
       );
     } catch (error) {
       return error.toString();
@@ -113,89 +121,56 @@ abstract class Routes {
 
   static Future getHotTours(HttpRequest req, HttpResponse res) async {
     final required = req.getParameters({
-      'city_from_id': int.parse.then(U.of),
-      'country_id': int.parse.then(U.of),
-      'stars': (stars) => stars.split(',').map(int.parse).map(U.of).toList(),
+      'city_from_id': Utils.parseUInt,
+      'country_id': Utils.parseUInt,
+      'stars': Utils.parseUIntList,
     });
 
     try {
       Utils.checkParameters(required);
       return SLT.getHotTours(
-        cityFromId: required['city_from_id']!.asSuccess as U<int>,
-        countryId: required['country_id']!.asSuccess as U<int>,
-        stars: required['stars']!.asSuccess as List<U<int>>,
+        cityFromId: required['city_from_id']!.fst! as U<int>,
+        countryId: required['country_id']!.fst! as U<int>,
+        stars: required['stars']!.fst! as List<U<int>>,
       );
     } catch (error) {
       return error.toString();
     }
   }
 
-  // todo
   static Future getSeasonTours(HttpRequest req, HttpResponse res) async {
     final required = req.getParameters({
-      'city_from_id': int.parse.then(U.of),
-      'country_id': int.parse.then(U.of),
+      'city_from_id': Utils.parseUInt,
+      'country_id': Utils.parseUInt,
+      'adults': Utils.parseUInt,
+      'kids': Utils.parseUInt,
+      'kids_ages': Utils.parseUIntList,
+      'nights_min': Utils.parseUInt,
+      'nights_max': Utils.parseUInt,
     });
 
-    final _cities = req.uri.queryParameters['cities'];
-    if (_cities?.isEmpty == null) {
-      return '"cities" is empty'.failure.toString();
-    }
-    final _meals = req.uri.queryParameters['meals'];
-    if (_meals?.isEmpty == null) {
-      return '"meals" is empty'.failure.toString();
-    }
-    final _stars = req.uri.queryParameters['stars'];
-    if (_stars?.isEmpty == null) {
-      return '"stars" is empty'.failure.toString();
-    }
-    final _hotels = req.uri.queryParameters['hotels'];
-    if (_hotels?.isEmpty == null) {
-      return '"hotels" is empty'.failure.toString();
-    }
-    final _adults = req.uri.queryParameters['adults'];
-    if (_adults?.isEmpty == null) {
-      return '"adults" is empty'.failure.toString();
-    }
-    final _kids = req.uri.queryParameters['kids'];
-    if (_kids?.isEmpty == null) {
-      return '"kids" is empty'.failure.toString();
-    }
-    var _kidsAges = req.uri.queryParameters['kids_ages'];
-    final _nightsMin = req.uri.queryParameters['nights_min'];
-    if (_nightsMin?.isEmpty == null) {
-      return '"nights_min" is empty'.failure.toString();
-    }
-    final _nightsMax = req.uri.queryParameters['nights_max'];
-    if (_nightsMax?.isEmpty == null) {
-      return '"nights_max" is empty'.failure.toString();
-    }
-
-    final cities = _cities!.split(',').map(int.parse).map(U.of).toList();
-    final meals = _meals!.split(',').map(int.parse).map(U.of).toList();
-    final stars = _stars!.split(',').map(int.parse).map(U.of).toList();
-    final hotels = _hotels!.split(',').map(int.parse).map(U.of).toList();
-    final adults = U<int>(int.parse(_adults!));
-    final kids = U<int>(int.parse(_kids!));
-    final kidsAges = _kidsAges?.split(',').map(int.parse).map(U.of).toList();
-    final nightsMin = U<int>(int.parse(_nightsMin!));
-    final nightsMax = U<int>(int.parse(_nightsMax!));
+    final optional = req.getParameters({
+      'stars': Utils.parseUIntList,
+      'cities': Utils.parseUIntList,
+      'hotels': Utils.parseUIntList,
+      'meals': Utils.parseUIntList,
+    });
 
     try {
       Utils.checkParameters(required);
       return SLT.getSeasonTours(
         GetSeasonToursArguments(
-          cityFromId: required['city_from_id']!.asSuccess as U<int>,
-          countryId: required['country_id']!.asSuccess as U<int>,
-          cities: cities,
-          meals: meals,
-          stars: stars,
-          hotels: hotels,
-          adults: adults,
-          kids: kids,
-          kidsAges: kidsAges ?? [],
-          nightsMin: nightsMin,
-          nightsMax: nightsMax,
+          cityFromId: required['city_from_id']!.fst! as U<int>,
+          countryId: required['country_id']!.fst! as U<int>,
+          adults: required['adults']!.fst! as U<int>,
+          kids: required['kids']!.fst! as U<int>,
+          kidsAges: optional['kids_ages']!.fst as List<U<int>>,
+          nightsMin: required['nights_min']!.fst! as U<int>,
+          nightsMax: required['nights_max']!.fst! as U<int>,
+          stars: optional['stars']!.fst as List<U<int>>?,
+          cities: optional['cities']!.fst as List<U<int>>?,
+          hotels: optional['hotels']!.fst as List<U<int>>?,
+          meals: optional['meals']!.fst as List<U<int>>?,
         ),
       );
     } catch (error) {
@@ -204,20 +179,24 @@ abstract class Routes {
   }
 
   static Future getCreateLead(HttpRequest req, HttpResponse res) async {
-    final _note = req.uri.queryParameters['note'];
-    if (_note?.isEmpty == null) {
-      return '"_note" is empty'.failure.toString();
+    final required = req.getParameters({
+      'note': (x) => x,
+    });
+
+    try {
+      Utils.checkParameters(required);
+      return UON.createLead(
+        note: required['note']!.fst! as String,
+      );
+    } catch (error) {
+      return error.toString();
     }
-
-    final note = _note!;
-
-    return UON.createLead(note: note);
   }
 }
 
 Future<void> main() async {
   final app = Alfred(onNotFound: Routes.getNotFound)
-    ..get('/', (req, res) async => null)
+    ..get('/', Routes.getRoot)
     ..get('/depart_cities', Routes.getDepartCities)
     ..get('/countries', Routes.getCountries)
     ..get('/cities', Routes.getCities)
